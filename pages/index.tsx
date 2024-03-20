@@ -1,14 +1,19 @@
+import React from 'react';
 import useStore from '../stores';
+import LoginRegister from '@/components/Users/LoginRegister';
 
 const HomePage = () => {
-
-    const { postNewUser } = useStore();
+    const { userStatus } = useStore(); 
 
     return (
-        <div>
-            <h1>Smart Home Web App</h1>
-            <button onClick={postNewUser}>Create User</button>
-        </div>
+        <>
+            { !userStatus ? <LoginRegister /> :
+                    <div>
+                        <h1>Smart Home Web App</h1>
+                    </div>
+            }
+        </>
+
     )
 }
 

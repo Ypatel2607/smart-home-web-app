@@ -2,9 +2,11 @@ import * as R from 'ramda';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import { createUserSlice } from './user-slice';
 import firebase from 'firebase/compat/app';
 import { getDatabase } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
+import { createSystemSlice } from './system-slice';
+import { createUserSlice } from './user-slice';
 
 //firebase configuration
 const firebaseConfig = {
@@ -21,6 +23,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 
+//get authentication from firebase
+export const auth = getAuth(app);
+
 // Get a reference to the database service
 export const database = getDatabase(app);
 
@@ -28,6 +33,7 @@ const useStore: any = create(
     devtools(
         persist(
             immer((...args: any) => ({
+                ...createSystemSlice(...args),
                 ...createUserSlice(...args)
             })), {
                 name: 'SmartHomeApp',
