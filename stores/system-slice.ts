@@ -1,8 +1,8 @@
 
 export const createSystemSlice = (setState?: any, getState?: any, storeApi?: any) => ({ 
     resetGlobalState: () => {
-        getState().resetUserSlice;
+        return (
+            getState().resetUserSlice()
+        )
     }
 });
-
-export default createSystemSlice;

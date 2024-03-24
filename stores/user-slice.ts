@@ -1,16 +1,19 @@
 import { ref, set } from 'firebase/database';
 import { auth, database } from './index';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
+import { 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    signOut, 
+    sendPasswordResetEmail, 
+    updateProfile, 
+    updatePassword } from 'firebase/auth';
 import { produce } from 'immer';
+import { validateUserData } from '@/utils/user-utils';
 
 const initialState: any = {
     userStatus: false,
     userData: {
         id: '',
-        name: '',
-        email: '',
-    },
-    newUserData: { 
         name: '',
         email: '',
         password: '',
@@ -19,7 +22,17 @@ const initialState: any = {
     registeringError: '',
     loginError: '',
     logoutError: '',
-    resetPasswordErrorEmail: ''
+    resetPasswordErrorEmail: '',
+    updateProfileError: {
+        name: '',
+        password: ''
+    },
+    validateUserDataError: {
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    }
 }
 
 export const createUserSlice = (setState?: any, getState?: any, storeApi?: any) => ({
@@ -54,11 +67,6 @@ export const createUserSlice = (setState?: any, getState?: any, storeApi?: any) 
             draft.userData[key] = value;
         }));
     },
-    setNewUserData: (key: string, value: any) => {
-        setState(produce((draft: any) => {
-            draft.newUserData[key] = value;
-        }));
-    },
     setRegisteringError: (value: string) => {
         setState(produce((draft: any) => {
             draft.registeringError = value;
@@ -79,24 +87,41 @@ export const createUserSlice = (setState?: any, getState?: any, storeApi?: any) 
             draft.resetPasswordEmailError = value;
         }));
     },
+    setValidateUserDataError: (value: any) => {
+        setState(produce((draft: any) => {
+            draft.validateUserDataError = value;
+        }));
+    },
+    setUpdateProfileError: (key: string, value: any) => {
+        setState(produce((draft: any) => {
+            draft.updateProfileError[key] = value;
+        }));
+    },
 
     registerUser: async () => {
-        const { email, password } = getState().newUserData;
+        const { name, email, password } = getState().userData;
         await createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential: any) => {
                 getState().setUserStatus(true);
                 getState().setUserData('id', userCredential.user.uid);
-                getState().setUserData('name', userCredential.user.displayName);
                 getState().setRegisteringError('');
+                
+                //@ts-ignore
+                updateProfile(auth.currentUser, {
+                    displayName: name
+                }).catch((error: any) => {
+                    getState().setRegisteringError(error.message);
+                })
             })
             .catch((error: any) => {
-                getState().setRegisteringError(error.messahe);
+                getState().setRegisteringError(error.message);
             })
     },
     loginUser: async () => {
         const { email, password } = getState().userData;
         await signInWithEmailAndPassword(auth, email, password)
             .then((userCredential: any) => {
+                console.log(userCredential);
                 getState().setUserStatus(true);
                 getState().setUserData('id', userCredential.user.uid);
                 getState().setUserData('name', userCredential.user.displayName);
@@ -121,10 +146,30 @@ export const createUserSlice = (setState?: any, getState?: any, storeApi?: any) 
         const { email } = getState().userData;
         await sendPasswordResetEmail(auth, email)
             .then(() => {
-                getState().seResetPasswordEmailError('');
+                getState().setResetPasswordEmailError('');
             })
             .catch((error: any) => {
                 getState().setResetPasswordEmailError(error.message);
             });
     },
+    updateUserName: async (name: string) => {
+        //@ts-ignore
+        await updateProfile(auth.currentUser, { displayName: name})
+            .then(() => {
+                getState().setUserData('name', name);
+                getState().setUpdateProfileError('name', '');
+            }).catch((error: any) => {
+                getState().setUpdateProfileError('name', error.message);
+            })
+    },
+    updateUserPassword: async (password: string) => {
+        //@ts-ignore
+        await updatePassword(auth.currentUser, password)
+            .then(() => {
+                getState().setUserData('password', password);
+                getState().setUpdateProfileError('password', '');
+            }).catch((error: any) => {
+                getState().setUpdateProfileError('password', error.message);
+            })
+    }
 });

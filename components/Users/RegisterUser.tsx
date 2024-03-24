@@ -1,37 +1,87 @@
 import React from 'react';
 import useStore from '../../stores';
-import router from 'next/router';
+import { Button, TextField, Typography, Box, Container } from '@mui/material';
+import { validateUserData } from '@/utils/user-utils';
 
 const RegisterUser = () => {
-      const { newUserData, registerUser, setNewUserData } = useStore();
-      const { name, email, password, confirmPassword } = newUserData;
+  const { 
+    userData,  
+    setUserData, 
+    registerUser, 
+    registeringError, 
+    setRegisteringError, 
+    validateUserDataError, 
+    setValidateUserDataError } = useStore();
+  const { name, email, password, confirmPassword } = userData;
 
   const handleRegister = async () => {
-    try {
+    setRegisteringError('');
+
+    if(await validateUserData({ setErrors: setValidateUserDataError, name, email, password, confirmPassword})) {
       await registerUser();
-      router.push('/login');
-    } catch (error) {
-      console.error('Error registering user:', error);
+    }
   }
-  };
 
   return (
-    <div>
-      <h2>Register</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setNewUserData('email',e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setNewUserData('password',e.target.value)}
-      />
-      <button onClick={handleRegister}>Register</button>
-    </div>
+    <Container maxWidth="xs">
+      <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Typography variant="h5" gutterBottom>
+          Register
+        </Typography>
+        <TextField
+          type="text"
+          label="Name"
+          value={name}
+          onChange={(e) => setUserData('name', e.target.value)}
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          required
+          helperText={validateUserDataError.name}
+          FormHelperTextProps={{ sx: { color: 'red' } }}
+        />
+        <TextField
+          type="email"
+          label="Email"
+          value={email}
+          onChange={(e) => setUserData('email', e.target.value)}
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          required
+          helperText={validateUserDataError.email}
+          FormHelperTextProps={{ sx: { color: 'red' } }}
+        />
+        <TextField
+          type="password"
+          label="Password"
+          value={password}
+          onChange={(e) => setUserData('password', e.target.value)}
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          required
+          helperText={validateUserDataError.password}
+          FormHelperTextProps={{ sx: { color: 'red' } }}
+        />
+        <TextField
+          type="password"
+          label="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) => setUserData('confirmPassword', e.target.value)}
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          required
+          helperText={validateUserDataError.confirmPassword}
+          FormHelperTextProps={{ sx: { color: 'red' } }}
+        />
+        <Button variant="contained" color="primary" onClick={handleRegister} fullWidth sx={{ my: 5 }}>
+          Register
+        </Button>
+        {registeringError && <Typography color="error">{registeringError}</Typography>}
+      </Box>
+    </Container>
   );
 };
 

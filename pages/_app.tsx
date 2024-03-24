@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { PropsWithChildren, useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import router from 'next/router';
 import useStore, { auth } from '../stores';
 import { onAuthStateChanged } from 'firebase/auth';
+import { NextPage } from 'next';
+import Head from 'next/head';
+import { Box } from '@mui/material';
+import AuthedLayout from '@/components/Layout/AuthedLayout';
+import AnonLayout from '@/components/Layout/AnonLayout';
 
 // Create a context for authentication state
 const AuthContext = React.createContext(null);
@@ -11,36 +16,69 @@ const AuthContext = React.createContext(null);
 function useAuth() {
   return React.useContext(AuthContext);
 }
- 
-function SmartHomeApp({ Component, pageProps }: AppProps) {
-  const { userStatus, setUserStatus, userData, resetGlobalState } = useStore(); 
 
-  if (!userStatus) {
-    resetGlobalState();
-  }
+const LayoutProvider = ({ children }: PropsWithChildren) => {
+  const { userStatus, setUserStatus, resetGlobalState } = useStore(); 
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user: any) => {
-      if(user) {
+    if (!userStatus) {
+      //reseting all global state to it's intial state
+      resetGlobalState();
+    }
+  },[userStatus]);
+  
+  useEffect(() => {
+    // Listen for authentication state changes
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
         setUserStatus(true);
       } else {
         setUserStatus(false);
+        // Redirect to login page if not authenticated
+        if (router.pathname !== '/') {
+          router.push('/');
+        }
       }
     });
   }, []);
 
-  // Redirect to login page if user is not authenticated
-  useEffect(() => {
-    if (!userStatus && router.pathname !== '/') {
-      router.push('/');
-    }
-  }, [userStatus, router]);
+  return (
+    userStatus ?
+      <AuthedLayout>
+        { children }
+      </AuthedLayout> 
+    :
+      <AnonLayout>
+        { children }
+      </AnonLayout>
+  )  
+ }
+
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P,IP> & {
+  getLayout?: ({ children }: PropsWithChildren) => JSX.Element
+}
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout
+}
+ 
+function SmartHomeApp({ Component, pageProps, ...props }: AppPropsWithLayout) {
+  const { session } = pageProps;
+  const PageLayout = Component.getLayout ?? LayoutProvider
 
   return (
-    <AuthContext.Provider value={userData}>
-      <Component {...pageProps} />
+    <AuthContext.Provider value={null}>
+      <Head>
+        <title>SmartHomeApp</title>
+        <meta name='viewport' content='initial-scale=1, width=device-width' />
+      </Head>
+      <Box sx={{ display: 'flex', margin: '-8px' }}>
+        <PageLayout>
+          <Component {...pageProps} />
+        </PageLayout>
+      </Box>
     </AuthContext.Provider>
   );
 }
 
-export default SmartHomeApp
+export default SmartHomeApp;
