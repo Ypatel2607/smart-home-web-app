@@ -1,5 +1,4 @@
-import { ref, set } from 'firebase/database';
-import { auth, database } from './index';
+import { auth } from './index';
 import { 
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
@@ -8,7 +7,6 @@ import {
     updateProfile, 
     updatePassword } from 'firebase/auth';
 import { produce } from 'immer';
-import { validateUserData } from '@/utils/user-utils';
 
 const initialState: any = {
     userStatus: false,
@@ -44,18 +42,6 @@ export const createUserSlice = (setState?: any, getState?: any, storeApi?: any) 
         });
     },
     ...initialState,
-    // postNewUser: async () => {
-    //     const userRef = ref(database, 'users'); // Reference to the 'users' table
-        
-    //     // Set the user data in the database
-    //     set(userRef, getState().newUserData)
-    //         .then(() => {
-    //         console.log('User created successfully');
-    //         })
-    //         .catch((error) => {
-    //         console.error('Error creating user:', error);
-    //         });
-    // },
 
     setUserStatus: (value: boolean) => {
         setState(produce((draft: any) => {

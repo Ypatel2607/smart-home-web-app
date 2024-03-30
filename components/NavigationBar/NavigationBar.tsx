@@ -2,6 +2,7 @@ import * as React from 'react';
 import router from 'next/router';
 import useStore from '../../stores';
 import { AppBar, Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
+import Image from 'next/image';
 
 const NavigationBar = () => {
     const { logoutUser, userData } = useStore();
@@ -12,8 +13,8 @@ const NavigationBar = () => {
             onClick: () => router.push('/')
         },
         {
-            label: 'About',
-            onClick: () => router.push('/')
+            label: 'Devices',
+            onClick: () => router.push('/devices')
         }];
 
     const settings = [
@@ -38,26 +39,13 @@ const NavigationBar = () => {
     };
 
     return (
-        <AppBar position="static" sx={{ height: '9vh' }}>
-            <Container maxWidth="xl">
+        <AppBar position="static" sx={{ height: '9vh', minHeight: '70px' }}>
+            <Container maxWidth={false}>
                 <Toolbar disableGutters>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        onClick={() => router.push('/')}
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        LOGO
-                    </Typography>
+                    <Button onClick={() => router.push('/')} color="primary">
+                        <Image src={'/logo.png'} alt='logo' width={50} height={50} />
+                    </Button>
+
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
                         <Button

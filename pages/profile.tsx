@@ -1,9 +1,9 @@
 import { Button, Divider, Paper, Stack, TextField, Typography } from '@mui/material';
 import useStore from '../stores';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { validateUserData } from '@/utils/user-utils';
 
-const profile = () => {
+const Profile = () => {
     const { 
         userData,
         validateUserDataError, 
@@ -34,8 +34,6 @@ const profile = () => {
                     confirmPassword: updatedUserData.confirmPassword})
             )
         }
-
-        // console.log(await validateData());
 
         if(await validateData()) {
             await updateUserName(updatedUserData.name);
@@ -115,4 +113,4 @@ const profile = () => {
     )
 };
 
-export default profile;
+export default Profile;
