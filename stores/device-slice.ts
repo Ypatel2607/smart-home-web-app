@@ -1,4 +1,4 @@
-import { onValue, push, ref, remove, set } from 'firebase/database';
+import { onValue, push, ref, remove, set, update } from 'firebase/database';
 import { database } from './index';
 import { produce } from 'immer';
 
@@ -11,8 +11,9 @@ const initialState: any = {
         status: false,
     },
     addDeviceModal: false,
+    editDeviceModal: false,
     removeDeviceModal: false,
-    validateNewDeviceDataError: {
+    validateDeviceDataError: {
         name: '',
         type: '',
     },
@@ -40,6 +41,11 @@ export const createDeviceSlice = (setState?: any, getState?: any, storeApi?: any
             draft.addDeviceModal = value;
         }));
     },
+    setEditDeviceModal: (value: boolean) => {
+        setState(produce((draft: any) => {
+            draft.editDeviceModal = value;
+        }));
+    },
     setRemoveDeviceModal: (value: boolean) => {
         setState(produce((draft: any) => {
             draft.removeDeviceModal = value;
@@ -52,9 +58,9 @@ export const createDeviceSlice = (setState?: any, getState?: any, storeApi?: any
             });
         });
     },
-    setValidateNewDeviceDataError: (value: any) => {
+    setValidateDeviceDataError: (value: any) => {
         setState(produce((draft: any) => {
-            draft.validateNewDeviceDataError = value;
+            draft.validateDeviceDataError = value;
         }));
     },
     setDeviceData: (value: any[]) => {
@@ -92,6 +98,18 @@ export const createDeviceSlice = (setState?: any, getState?: any, storeApi?: any
             getState().setDeviceData(data);
             getState().setDeviceDataLoading(false);
         }, { onlyOnce: true });
+    },
+    editDevice: async (deviceData: any) => {
+        const { key, ...updatedData } = deviceData;
+        const deviceRef = ref(database, `devices/${key}`);
+        try {
+            await update(deviceRef, updatedData);
+            getState().setSuccessErrorAlert('success');
+            getState().setSuccessErrorMessage('Device successfully updated.');
+        } catch (error) {
+            getState().setSuccessErrorAlert('error');
+            getState().setSuccessErrorMessage('Some error occurred while updating device.');
+        }
     },
     removeDevice: async (key: string) => {
         const deviceRef = ref(database, `devices/${key}`);

@@ -17,8 +17,8 @@ const RemoveDeviceModal = ({ open, handleClose, removeDeviceData }: RemoveDevice
         console.log(removeDeviceData);
         if(Object.entries(removeDeviceData).length) {
             await removeDevice(removeDeviceData.key);
+            await getDevices();
             handleClose();
-            getDevices();
         }
     }
 

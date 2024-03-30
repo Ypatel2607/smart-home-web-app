@@ -1,8 +1,9 @@
 import { Button, Container, FormControl, IconButton, InputLabel, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import useStore from '../../stores'
 import { validateNewDeviceData } from '@/utils/device-utils';
 import CloseIcon from '@mui/icons-material/Close';
+import { DEVICE_TYPES } from '@/utils/constants';
 
 interface AddDeviceModalProps {
     open: boolean,
@@ -15,8 +16,8 @@ const AddDeviceModal = ({ open, handleClose }: AddDeviceModalProps) => {
         postNewDevice, 
         newDeviceData, 
         setNewDeviceData, 
-        validateNewDeviceDataError, 
-        setValidateNewDeviceDataError, 
+        validateDeviceDataError, 
+        setValidateDeviceDataError, 
         getDevices } = useStore();
     const { name, type, manufacturer, model } = newDeviceData;
 
@@ -24,7 +25,7 @@ const AddDeviceModal = ({ open, handleClose }: AddDeviceModalProps) => {
         const validateData = async () => {
             return (
                 await validateNewDeviceData({  
-                    setErrors: setValidateNewDeviceDataError, 
+                    setErrors: setValidateDeviceDataError, 
                     name: newDeviceData.name, 
                     type: newDeviceData.type })
             )
@@ -32,7 +33,7 @@ const AddDeviceModal = ({ open, handleClose }: AddDeviceModalProps) => {
 
         if(await validateData()) {
             await postNewDevice();
-            getDevices();
+            await getDevices();
             handleClose();
         }
     }
@@ -56,7 +57,15 @@ const AddDeviceModal = ({ open, handleClose }: AddDeviceModalProps) => {
                     alignItems: 'center' }}
             >
                 <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '8px' }}>
-                    <IconButton onClick={handleClose}>
+                    <IconButton 
+                        onClick={() => {
+                            handleClose();             
+                            setValidateDeviceDataError({
+                                name: '',
+                                type: '',
+                            })
+                        }}
+                    >
                         <CloseIcon />
                     </IconButton>
                 </div>
@@ -73,7 +82,7 @@ const AddDeviceModal = ({ open, handleClose }: AddDeviceModalProps) => {
                         sx={{ width: '45%', mt: 2, mb: 1 }}
                         margin="normal"
                         required
-                        helperText={validateNewDeviceDataError.name}
+                        helperText={validateDeviceDataError.name}
                         FormHelperTextProps={{ sx: { color: 'red' } }}
                     />
                     <FormControl sx={{ mt: 2, mb: 1, width: '45%', height: '80%' }}>
@@ -86,12 +95,11 @@ const AddDeviceModal = ({ open, handleClose }: AddDeviceModalProps) => {
                             label="Type"
                             required
                         >
-                            <MenuItem value={'security-device'}>Security Device</MenuItem>
-                            <MenuItem value={'climate-control-device'}>Climate Control Device</MenuItem>
-                            <MenuItem value={'lighting-device'}>Lighting Device</MenuItem>
-                            <MenuItem value={'appliance-control-device'}>Appliance Control Device</MenuItem>
+                            {Object.entries(DEVICE_TYPES).map(([value, label]) => (
+                                <MenuItem key={value} value={value}>{label}</MenuItem>
+                            ))}
                         </Select>
-                        {validateNewDeviceDataError.type && <Typography variant={'subtitle1'} color="error">{validateNewDeviceDataError.type}</Typography>}
+                        {validateDeviceDataError.type && <Typography variant={'subtitle1'} color="error">{validateDeviceDataError.type}</Typography>}
                     </FormControl>
                 </Stack>
                 <Stack my={1} direction={'row'} justifyContent={'space-between'} width={'80%'}>
