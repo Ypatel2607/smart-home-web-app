@@ -11,14 +11,14 @@ import { createDeviceSlice } from './device-slice';
 
 //firebase configuration
 const firebaseConfig = {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+    apiKey: 'AIzaSyDA7ptIim_K8SYORsIwGOfM90wKBIFkWCU',
+    authDomain: 'smart-home-app-6506e.firebaseapp.com',
+    databaseURL: 'https://smart-home-app-6506e-default-rtdb.firebaseio.com',
+    projectId: 'smart-home-app-6506e',
+    storageBucket: 'smart-home-app-6506e.appspot.com',
+    messagingSenderId: '653023811852',
+    appId: '1:653023811852:web:6492804aeff3f7cc9a5129',
+    measurementId: 'G-7LFHTMNV0R'
 };
   
 // Initialize Firebase
