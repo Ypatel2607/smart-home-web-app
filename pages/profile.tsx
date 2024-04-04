@@ -2,6 +2,7 @@ import { Button, Divider, Paper, Stack, TextField, Typography } from '@mui/mater
 import useStore from '../stores';
 import { useState } from 'react';
 import { validateUserData } from '@/utils/user-utils';
+import DeleteAccountModal from '@/components/Users/DeleteAccountModal';
 
 const Profile = () => {
     const { 
@@ -11,7 +12,9 @@ const Profile = () => {
         updateUserName,
         updateUserPassword,
         updateProfileError,
-        setUpdateProfileError } = useStore();
+        setUpdateProfileError,
+        deleteAccountModal,
+        setDeleteAccountModal } = useStore();
     const { name, email, password, confirmPassword } = userData;
     const [updatedUserData, setUpdateUserData] = useState({
         name: name,
@@ -41,75 +44,85 @@ const Profile = () => {
         }
     }
 
+    const handleDeleteAccountOpen = () => {
+        setDeleteAccountModal(true);
+    }
+
+    const handleDeleteAccountClose = () => {
+        setDeleteAccountModal(false);
+    }
+
     return (
-        <Paper elevation={3} sx={{ my: 10, mx: 20, p: 3, height: '65vh' }}>
-            <Typography variant="h5" sx={{ m: 2 }} gutterBottom>
-                Profile
-            </Typography>
-            <Divider />
-            <Stack justifyContent={'space-between'} height={'85%'}>
-                <Stack spacing={5} m={5}>
-                    <Stack direction={'row'} spacing={20}>
-                        <TextField
-                            type="text"
-                            label="Name"
-                            value={updatedUserData.name}
-                            onChange={(e) => setUpdateUserData((prevState: any) => ({ ...prevState, name: e.target.value }))}
-                            variant="outlined"
-                            required
-                            helperText={validateUserDataError.name}
-                            FormHelperTextProps={{ sx: { color: 'red' } }}
-                            sx={{ width: '25%' }}
-                        />
-                        <TextField
-                            type="email"
-                            label="Email"
-                            value={updatedUserData.email}
-                            onChange={(e) => setUpdateUserData((prevState: any) => ({ ...prevState, email: e.target.value }))}
-                            variant="outlined"
-                            required
-                            disabled
-                            helperText={validateUserDataError.email}
-                            FormHelperTextProps={{ sx: { color: 'red' } }}
-                            sx={{ width: '25%' }}
-                        />
-                    </Stack>
-                    <Stack direction={'row'} spacing={20}>
-                        <TextField
-                            type="password"
-                            label="Password"
-                            value={updatedUserData.password}
-                            onChange={(e) => setUpdateUserData((prevState: any) => ({ ...prevState, password: e.target.value }))}
-                            variant="outlined"
-                            required
-                            helperText={validateUserDataError.password || updateProfileError.password}
-                            FormHelperTextProps={{ sx: { color: 'red' } }}
-                            sx={{ width: '25%' }}
+        <>
+            <Paper elevation={3} sx={{ my: 10, mx: 20, p: 3, height: '65vh' }}>
+                <Typography variant="h5" sx={{ m: 2 }} gutterBottom>
+                    Profile
+                </Typography>
+                <Divider />
+                <Stack justifyContent={'space-between'} height={'85%'}>
+                    <Stack spacing={5} m={5}>
+                        <Stack direction={'row'} spacing={20}>
+                            <TextField
+                                type="text"
+                                label="Name"
+                                value={updatedUserData.name}
+                                onChange={(e) => setUpdateUserData((prevState: any) => ({ ...prevState, name: e.target.value }))}
+                                variant="outlined"
+                                required
+                                helperText={validateUserDataError.name}
+                                FormHelperTextProps={{ sx: { color: 'red' } }}
+                                sx={{ width: '25%' }}
                             />
                             <TextField
-                            type="password"
-                            label="Confirm Password"
-                            value={updatedUserData.confirmPassword}
-                            onChange={(e) => setUpdateUserData((prevState: any) => ({ ...prevState, confirmPassword: e.target.value }))}
-                            variant="outlined"
-                            required
-                            helperText={validateUserDataError.confirmPassword}
-                            FormHelperTextProps={{ sx: { color: 'red' } }}
-                            sx={{ width: '25%' }}
+                                type="email"
+                                label="Email"
+                                value={updatedUserData.email}
+                                onChange={(e) => setUpdateUserData((prevState: any) => ({ ...prevState, email: e.target.value }))}
+                                variant="outlined"
+                                required
+                                disabled
+                                helperText={validateUserDataError.email}
+                                FormHelperTextProps={{ sx: { color: 'red' } }}
+                                sx={{ width: '25%' }}
                             />
+                        </Stack>
+                        <Stack direction={'row'} spacing={20}>
+                            <TextField
+                                type="password"
+                                label="Password"
+                                value={updatedUserData.password}
+                                onChange={(e) => setUpdateUserData((prevState: any) => ({ ...prevState, password: e.target.value }))}
+                                variant="outlined"
+                                required
+                                helperText={validateUserDataError.password || updateProfileError.password}
+                                FormHelperTextProps={{ sx: { color: 'red' } }}
+                                sx={{ width: '25%' }}
+                                />
+                                <TextField
+                                type="password"
+                                label="Confirm Password"
+                                value={updatedUserData.confirmPassword}
+                                onChange={(e) => setUpdateUserData((prevState: any) => ({ ...prevState, confirmPassword: e.target.value }))}
+                                variant="outlined"
+                                required
+                                helperText={validateUserDataError.confirmPassword}
+                                FormHelperTextProps={{ sx: { color: 'red' } }}
+                                sx={{ width: '25%' }}
+                                />
+                        </Stack>
                     </Stack>
-                </Stack>
-                <Stack direction={'row'} spacing={20} m={5} justifyContent={'space-between'}>
-                    <Button variant="outlined" color="error" onClick={() => {}} sx={{ width: '20%' }}>
-                        Delete Account
-                    </Button>
-                    <Button variant="contained" color="primary" onClick={handleUpdateProfile} sx={{ width: '20%' }}>
-                        Update Profile
-                    </Button>
-                </Stack>
-            </Stack>
-            
-        </Paper>
+                    <Stack direction={'row'} spacing={20} m={5} justifyContent={'space-between'}>
+                        <Button variant="outlined" color="error" onClick={handleDeleteAccountOpen} sx={{ width: '20%' }}>
+                            Delete Account
+                        </Button>
+                        <Button variant="contained" color="primary" onClick={handleUpdateProfile} sx={{ width: '20%' }}>
+                            Update Profile
+                        </Button>
+                    </Stack>
+                </Stack> 
+            </Paper>
+            <DeleteAccountModal open={deleteAccountModal} handleClose={handleDeleteAccountClose} />
+        </>
     )
 };
 

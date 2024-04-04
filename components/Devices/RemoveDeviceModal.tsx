@@ -14,7 +14,6 @@ const RemoveDeviceModal = ({ open, handleClose, removeDeviceData }: RemoveDevice
     const { removeDevice, getDevices } = useStore();
 
     const handleRemoveDevice = async () => {
-        console.log(removeDeviceData);
         if(Object.entries(removeDeviceData).length) {
             await removeDevice(removeDeviceData.key);
             await getDevices();

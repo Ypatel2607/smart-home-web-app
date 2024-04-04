@@ -2,7 +2,7 @@ import { Alert } from '@mui/material';
 import React, { useEffect } from 'react';
 import useStore from '../../stores'
 
-const SucessErrorModal = () => {
+const SucessErrorAlert = () => {
 
     const { successErrorAlert, setSuccessErrorAlert, successErrorMessage, setSuccessErrorMessage } = useStore();
 
@@ -38,4 +38,4 @@ const SucessErrorModal = () => {
     )
 };
 
-export default SucessErrorModal;
+export default SucessErrorAlert;

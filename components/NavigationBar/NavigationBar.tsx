@@ -51,7 +51,7 @@ const NavigationBar = () => {
                         <Button
                             key={page.label}
                             onClick={() => page.onClick() }
-                            sx={{ my: 2, color: 'white', display: 'block' }}
+                            sx={{ my: 2, mx: 1, color: 'white', display: 'block', fontSize: '16px' }}
                         >
                             {page.label}
                         </Button>
@@ -82,7 +82,7 @@ const NavigationBar = () => {
                         >
                         {settings.map((setting) => (
                             <MenuItem key={setting.label} onClick={() => { handleCloseUserMenu(); setting.onClick(); }}>
-                                <Typography textAlign="center">{setting.label}</Typography>
+                                <Typography variant={'subtitle1'} textAlign="center">{setting.label}</Typography>
                             </MenuItem>
                         ))}
                         </Menu>

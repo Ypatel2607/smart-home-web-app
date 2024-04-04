@@ -5,7 +5,8 @@ import {
     signOut, 
     sendPasswordResetEmail, 
     updateProfile, 
-    updatePassword } from 'firebase/auth';
+    updatePassword, 
+    deleteUser } from 'firebase/auth';
 import { produce } from 'immer';
 
 const initialState: any = {
@@ -30,7 +31,8 @@ const initialState: any = {
         email: '',
         password: '',
         confirmPassword: ''
-    }
+    },
+    deleteAccountModal: false
 }
 
 export const createUserSlice = (setState?: any, getState?: any, storeApi?: any) => ({
@@ -83,12 +85,16 @@ export const createUserSlice = (setState?: any, getState?: any, storeApi?: any) 
             draft.updateProfileError[key] = value;
         }));
     },
+    setDeleteAccountModal: (value: boolean) => {
+        setState(produce((draft: any) => {
+            draft.deleteAccountModal = value;
+        }));
+    },
 
     registerUser: async () => {
         const { name, email, password } = getState().userData;
         await createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential: any) => {
-                getState().setUserStatus(true);
                 getState().setUserData('id', userCredential.user.uid);
                 getState().setRegisteringError('');
                 
@@ -98,9 +104,14 @@ export const createUserSlice = (setState?: any, getState?: any, storeApi?: any) 
                 }).catch((error: any) => {
                     getState().setRegisteringError(error.message);
                 })
+
+                getState().setSuccessErrorAlert('success');
+                getState().setSuccessErrorMessage('Account successfully created.')
             })
             .catch((error: any) => {
                 getState().setRegisteringError(error.message);
+                getState().setSuccessErrorAlert('error');
+                getState().setSuccessErrorMessage('Some error occur creating account.');
             })
     },
     loginUser: async () => {
@@ -128,14 +139,18 @@ export const createUserSlice = (setState?: any, getState?: any, storeApi?: any) 
                 getState().setLogoutError(error.message);
             });
     },
-    resetPassword: async () => {
+    resetPasswordEmail: async () => {
         const { email } = getState().userData;
         await sendPasswordResetEmail(auth, email)
             .then(() => {
                 getState().setResetPasswordEmailError('');
+                getState().setSuccessErrorAlert('success');
+                getState().setSuccessErrorMessage('Email successfully sent.')
             })
             .catch((error: any) => {
                 getState().setResetPasswordEmailError(error.message);
+                getState().setSuccessErrorAlert('error');
+                getState().setSuccessErrorMessage('Some error occur sending email.');
             });
     },
     updateUserName: async (name: string) => {
@@ -144,8 +159,12 @@ export const createUserSlice = (setState?: any, getState?: any, storeApi?: any) 
             .then(() => {
                 getState().setUserData('name', name);
                 getState().setUpdateProfileError('name', '');
+                getState().setSuccessErrorAlert('success');
+                getState().setSuccessErrorMessage('Profile successfully Updated.')
             }).catch((error: any) => {
                 getState().setUpdateProfileError('name', error.message);
+                getState().setSuccessErrorAlert('error');
+                getState().setSuccessErrorMessage('Some error occur updating profile.');
             })
     },
     updateUserPassword: async (password: string) => {
@@ -154,8 +173,24 @@ export const createUserSlice = (setState?: any, getState?: any, storeApi?: any) 
             .then(() => {
                 getState().setUserData('password', password);
                 getState().setUpdateProfileError('password', '');
+                getState().setSuccessErrorAlert('success');
+                getState().setSuccessErrorMessage('Profile successfully Updated.')
             }).catch((error: any) => {
                 getState().setUpdateProfileError('password', error.message);
+                getState().setSuccessErrorAlert('error');
+                getState().setSuccessErrorMessage('Some error occur updating profile.');
             })
+    },
+    deleteUser: async () => {
+        //@ts-ignore
+        deleteUser(auth.currentUser)
+            .then(() => {
+                getState().setUserStatus(false);
+                getState().setSuccessErrorAlert('success');
+                getState().setSuccessErrorMessage('Account successfully Deleted.')
+            }).catch((error) => {
+                getState().setSuccessErrorAlert('error');
+                getState().setSuccessErrorMessage('Some error occur deleting account.');
+            });
     }
 });

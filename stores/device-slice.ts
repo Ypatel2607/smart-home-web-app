@@ -75,7 +75,7 @@ export const createDeviceSlice = (setState?: any, getState?: any, storeApi?: any
     },
 
     postNewDevice: async () => {
-        const deviceRef = ref(database, 'devices');
+        const deviceRef = ref(database, `${getState().userData.id}/devices`);
         const newDeviceRef = push(deviceRef);
         set(newDeviceRef, getState().newDeviceData)
             .then(() => {
@@ -90,7 +90,7 @@ export const createDeviceSlice = (setState?: any, getState?: any, storeApi?: any
     },
     getDevices: async () => {
         getState().setDeviceDataLoading(true)
-        const deviceRef = ref(database, 'devices');
+        const deviceRef = ref(database, `${getState().userData.id}/devices`);
         
         onValue(deviceRef, (snapshot) => {
             //@ts-ignore
@@ -101,7 +101,7 @@ export const createDeviceSlice = (setState?: any, getState?: any, storeApi?: any
     },
     editDevice: async (deviceData: any) => {
         const { key, ...updatedData } = deviceData;
-        const deviceRef = ref(database, `devices/${key}`);
+        const deviceRef = ref(database, `${getState().userData.id}/devices/${key}`);
         try {
             await update(deviceRef, updatedData);
             getState().setSuccessErrorAlert('success');
@@ -112,7 +112,7 @@ export const createDeviceSlice = (setState?: any, getState?: any, storeApi?: any
         }
     },
     removeDevice: async (key: string) => {
-        const deviceRef = ref(database, `devices/${key}`);
+        const deviceRef = ref(database, `${getState().userData.id}/devices/${key}`);
         try {
             await remove(deviceRef);
             getState().setSuccessErrorAlert('success');
