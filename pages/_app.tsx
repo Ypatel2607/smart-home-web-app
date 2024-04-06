@@ -71,6 +71,7 @@ function SmartHomeApp({ Component, pageProps, ...props }: AppPropsWithLayout) {
       <Head>
         <title>SmartHomeApp</title>
         <meta name='viewport' content='initial-scale=1, width=device-width' />
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico?" />
       </Head>
       <Box sx={{ display: 'flex', margin: '-8px' }}>
         <PageLayout>
