@@ -7,6 +7,7 @@ import Image from 'next/image';
 const NavigationBar = () => {
     const { logoutUser, userData } = useStore();
     const { name } = userData;
+    const prefix = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
     const pages = [        {
             label: 'Home',
@@ -43,7 +44,7 @@ const NavigationBar = () => {
             <Container maxWidth={false}>
                 <Toolbar disableGutters>
                     <Button onClick={() => router.push('/')} color="primary">
-                        <Image src={'/logo.png'} alt='logo' width={50} height={50} />
+                        <Image src={`${prefix}/logo.png`} alt='logo' width={50} height={50} />
                     </Button>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>

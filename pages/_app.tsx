@@ -64,7 +64,6 @@ type AppPropsWithLayout = AppProps & {
 }
  
 function SmartHomeApp({ Component, pageProps, ...props }: AppPropsWithLayout) {
-  const { session } = pageProps;
   const PageLayout = Component.getLayout ?? LayoutProvider
 
   return (
