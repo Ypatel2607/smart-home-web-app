@@ -5,7 +5,7 @@ import Dashboard from '@/components/Dashboard/Dashboard';
 
 
 const HomePage = () => {
-    const { userStatus, resetGlobalState } = useStore(); 
+    const { userStatus } = useStore(); 
     const [domLoaded, setDomLoaded] = useState(false);
 
     useEffect(() => {

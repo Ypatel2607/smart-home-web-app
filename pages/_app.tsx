@@ -8,7 +8,7 @@ import Head from 'next/head';
 import { Box } from '@mui/material';
 import AuthedLayout from '@/components/Layout/AuthedLayout';
 import AnonLayout from '@/components/Layout/AnonLayout';
-import SuccessErrorAlert from '@/components/utils/SuccessErrorAlert';
+import SuccessErrorAlert from '@/components/Utils/SuccessErrorAlert';
 
 // Create a context for authentication state
 const AuthContext = React.createContext(null);

@@ -9,15 +9,24 @@ const NavigationBar = () => {
     const { name } = userData;
     const prefix = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
-    const pages = [        {
+    const pages = [        
+        {
             label: 'Home',
             onClick: () => router.push('/')
         },
         {
             label: 'Devices',
             onClick: () => router.push('/devices')
-        }];
-
+        },
+        {
+            label: 'Analytics',
+            onClick: () => router.push('/analytics')
+        },
+        {
+            label: 'Notifications',
+            onClick: () => router.push('/notifications')
+        }
+    ];
     const settings = [
         {
             label: 'Profile',
@@ -49,13 +58,13 @@ const NavigationBar = () => {
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
-                        <Button
-                            key={page.label}
-                            onClick={() => page.onClick() }
-                            sx={{ my: 2, mx: 1, color: 'white', display: 'block', fontSize: '16px' }}
-                        >
-                            {page.label}
-                        </Button>
+                            <Button
+                                key={page.label}
+                                onClick={() => page.onClick() }
+                                sx={{ my: 2, mx: 1, color: 'white', display: 'block', fontSize: '18px', textTransform: 'none' }}
+                            >
+                                {page.label}
+                            </Button>
                         ))}
                     </Box>
 

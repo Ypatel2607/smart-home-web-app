@@ -118,14 +118,12 @@ export const createUserSlice = (setState?: any, getState?: any, storeApi?: any) 
         const { email, password } = getState().userData;
         await signInWithEmailAndPassword(auth, email, password)
             .then((userCredential: any) => {
-                console.log(userCredential);
                 getState().setUserStatus(true);
                 getState().setUserData('id', userCredential.user.uid);
                 getState().setUserData('name', userCredential.user.displayName);
                 getState().setLoginError('');
             })
             .catch((error: any) => {
-                console.log(error.message);
                 getState().setLoginError(error.message);
             })
     },

@@ -9,6 +9,7 @@ const initialState: any = {
         manufacturer: '',
         model: '',
         status: false,
+        electricConsumption: 0
     },
     addDeviceModal: false,
     editDeviceModal: false,
@@ -16,6 +17,7 @@ const initialState: any = {
     validateDeviceDataError: {
         name: '',
         type: '',
+        electricConsumption: ''
     },
     deviceData: [],
     deviceDataLoading: false

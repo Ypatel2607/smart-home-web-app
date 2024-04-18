@@ -30,7 +30,9 @@ export const createSystemSlice = (setState?: any, getState?: any, storeApi?: any
         return (
             getState().resetSystemSlice(),
             getState().resetUserSlice(),
-            getState().resetDeviceSlice()
+            getState().resetDeviceSlice(),
+            getState().resetDataSlice(),
+            getState().resetNotificationSlice()
         )
     }
 });

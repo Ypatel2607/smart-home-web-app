@@ -6,7 +6,7 @@ const AuthedLayout = ({ children }: PropsWithChildren) => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <NavigationBar />
-            <div style={{ backgroundColor: 'beige', height: '91vh' }}>
+            <div style={{ backgroundColor: 'beige', minHeight: '90vh' }}>
                 { children }
             </div>
         </div>

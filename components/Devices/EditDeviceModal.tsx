@@ -14,7 +14,7 @@ import {
     TextField, 
     Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import useStore from '../../stores'
+import useStore from '../../stores';
 import { validateNewDeviceData } from '@/utils/device-utils';
 import CloseIcon from '@mui/icons-material/Close';
 import { DEVICE_TYPES } from '@/utils/constants';
@@ -44,7 +44,8 @@ const EditDeviceModal = ({ open, handleClose, editDeviceData }: AddDeviceModalPr
                 await validateNewDeviceData({  
                     setErrors: setValidateDeviceDataError, 
                     name: deviceData.name, 
-                    type: deviceData.type })
+                    type: deviceData.type,
+                    electricConsumption: deviceData.electricConsumption })
             )
         }
 
@@ -65,9 +66,9 @@ const EditDeviceModal = ({ open, handleClose, editDeviceData }: AddDeviceModalPr
                 sx={{ 
                     backgroundColor: 'white', 
                     width: '50%', 
-                    height: '50%', 
+                    height: '62%', 
                     position: 'absolute', 
-                    top: '25%', 
+                    top: '20%', 
                     left: '25%', 
                     display: 'flex', 
                     flexDirection: 'column', 
@@ -86,27 +87,27 @@ const EditDeviceModal = ({ open, handleClose, editDeviceData }: AddDeviceModalPr
                         <CloseIcon />
                     </IconButton>
                 </div>
-                <Typography variant="h5" gutterBottom display={'flex'} justifyContent={'center'} m={1}>
+                <Typography variant="h5" gutterBottom display={'flex'} justifyContent={'center'} mb={2}>
                     {'Update Device Information'}
                 </Typography>
                 { deviceData === undefined ? 
                     <CircularProgress />
                     :
                     <>
-                        <Stack my={1} direction={'row'} justifyContent={'space-between'} width={'80%'}>
+                        <Stack direction={'row'} justifyContent={'space-between'} width={'80%'}>
                             <TextField
                                 type="text"
                                 label="Name"
                                 value={deviceData?.name}
                                 onChange={(e) => setDeviceData({ ...deviceData, 'name': e.target.value })}
                                 variant="outlined"
-                                sx={{ width: '45%', mt: 2, mb: 1 }}
+                                sx={{ width: '45%', mt: 2 }}
                                 margin="normal"
                                 required
                                 helperText={validateDeviceDataError.name}
                                 FormHelperTextProps={{ sx: { color: 'red' } }}
                             />
-                            <FormControl sx={{ mt: 2, mb: 1, width: '45%', height: '80%' }}>
+                            <FormControl sx={{ mt: 2, width: '45%', height: '80%' }}>
                                 <InputLabel id="type-label">Type</InputLabel>
                                 <Select
                                     labelId="type-label"
@@ -120,7 +121,7 @@ const EditDeviceModal = ({ open, handleClose, editDeviceData }: AddDeviceModalPr
                                         <MenuItem key={value} value={value}>{label}</MenuItem>
                                     ))}
                                 </Select>
-                                {validateDeviceDataError.type && <Typography variant={'subtitle1'} color="error">{validateDeviceDataError.type}</Typography>}
+                                {validateDeviceDataError.type && <Typography variant={'subtitle2'} color="error">{validateDeviceDataError.type}</Typography>}
                             </FormControl>
                         </Stack>
                         <Stack direction={'row'} justifyContent={'space-between'} width={'80%'}>
@@ -143,15 +144,36 @@ const EditDeviceModal = ({ open, handleClose, editDeviceData }: AddDeviceModalPr
                                 margin="normal"
                             />
                         </Stack>
-                        <FormControlLabel 
-                            control={
-                                <Switch 
-                                    checked={deviceData?.status}
-                                    onChange={(e) => setDeviceData({ ...deviceData, 'status': e.target.checked })}
-                                />
-                            } 
-                            label={ deviceData?.status ? 'on' : 'off' } 
-                        />
+                        <Stack direction={'row'} justifyContent={'space-between'} width={'80%'}>
+                            <TextField
+                                type="number"
+                                label="Electric Consumpotion (kW/h)"
+                                value={deviceData?.electricConsumption}
+                                onChange={(e) => {
+                                    // Prevent typing negative numbers
+                                    const value = parseFloat(e.target.value);
+                                    if (!isNaN(value) && value >= 0) {
+                                        setDeviceData({ ...deviceData, 'electricConsumption': e.target.value })
+                                    }
+                                }}
+                                variant="outlined"
+                                sx={{ width: '45%' }}
+                                margin="normal"
+                                required
+                                helperText={validateDeviceDataError.electricConsumption}
+                                FormHelperTextProps={{ sx: { color: 'red' } }}
+                            />
+                            <FormControlLabel 
+                                control={
+                                    <Switch 
+                                        checked={deviceData?.status}
+                                        onChange={(e) => setDeviceData({ ...deviceData, 'status': e.target.checked })}
+                                    />
+                                } 
+                                label={ deviceData?.status ? 'on' : 'off' } 
+                                sx={{ width: '45%' }}
+                            />
+                        </Stack>
                         <Button 
                             variant="contained" 
                             color="primary" 

@@ -60,7 +60,8 @@ const DeviceTable = () => {
             } 
         },
         { field: 'manufacturer', headerName: 'Device Manufacturer', flex: 1 }, 
-        { field: 'model', headerName: 'Device Model', flex: 1 },
+        { field: 'model', headerName: 'Device Model', flex: 0.8 },
+        { field: 'electricConsumption', headerName: 'Electric Consumpotion (kW/h)', flex: 1.1 },
         { 
             field: 'status', 
             headerName: 'Device Status', 
@@ -75,7 +76,7 @@ const DeviceTable = () => {
         { 
             field: 'edit-delete', 
             headerName: '', 
-            flex: 0.4, 
+            flex: 0.5, 
             renderCell: (params: GridCellParams) => {
                 const { row } = params
                 return (

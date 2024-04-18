@@ -8,6 +8,8 @@ import { getAuth } from 'firebase/auth';
 import { createSystemSlice } from './system-slice';
 import { createUserSlice } from './user-slice';
 import { createDeviceSlice } from './device-slice';
+import { createDataSlice } from './data-slice';
+import { createNotificationSlice } from './notification-slice';
 
 //firebase configuration
 const firebaseConfig = {
@@ -36,7 +38,9 @@ const useStore: any = create(
             immer((...args: any) => ({
                 ...createSystemSlice(...args),
                 ...createUserSlice(...args),
-                ...createDeviceSlice(...args)
+                ...createDeviceSlice(...args),
+                ...createDataSlice(...args),
+                ...createNotificationSlice(...args)
             })), {
                 name: 'SmartHomeApp',
                 getStorage: () => localStorage,
